@@ -13,27 +13,44 @@ public class Program
             new Player { Name = "Игрок 3", Level = 20, Power = 150 },
         };
 
-        var topPlayersByLevel = players.OrderByDescending(p => p.Level).Take(3);
-        Console.WriteLine("Топ 3 игроков по уровню:");
+        PrintTopPlayers(players, "Уровень", p => p.Level);
+        PrintTopPlayers(players, "Сила", p => p.Power);
+    }
 
-        foreach (var player in topPlayersByLevel)
+    public static void PrintTopPlayers<T>(List<Player> players, string criteriaName, Func<Player, T> criteriaSelector)
+    {
+        var topPlayers = players.OrderByDescending(criteriaSelector).Take(3);
+
+        Console.WriteLine($"Топ 3 игроков по {criteriaName}:");
+
+        foreach (var player in topPlayers)
         {
-            Console.WriteLine($"Имя: {player.Name}, Уровень: {player.Level}");
-        }
-
-        var topPlayersByPower = players.OrderByDescending(p => p.Power).Take(3);
-        Console.WriteLine("\nТоп 3 игроков по силе:");
-
-        foreach (var player in topPlayersByPower)
-        {
-            Console.WriteLine($"Имя: {player.Name}, Сила: {player.Power}");
+            Console.WriteLine($"Имя: {player.Name}, {criteriaName}: {criteriaSelector(player)}");
         }
     }
 }
 
 public class Player
 {
-    public string Name { get; set; }
-    public int Level { get; set; }
-    public int Power { get; set; }
+    private string _name;
+    private int _level;
+    private int _power;
+
+    public string Name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+
+    public int Level
+    {
+        get { return _level; }
+        set { _level = value; }
+    }
+
+    public int Power
+    {
+        get { return _power; }
+        set { _power = value; }
+    }
 }
