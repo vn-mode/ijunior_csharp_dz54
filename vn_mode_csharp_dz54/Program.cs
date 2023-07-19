@@ -8,24 +8,30 @@ public class Program
     {
         List<Player> players = new List<Player>
         {
-            new Player { Name = "Игрок 1", Level = 10, Power = 100 },
-            new Player { Name = "Игрок 2", Level = 15, Power = 200 },
-            new Player { Name = "Игрок 3", Level = 20, Power = 150 },
+            new Player("Игрок 1", 10, 100),
+            new Player("Игрок 2", 15, 200),
+            new Player("Игрок 3", 20, 150),
         };
 
-        PrintTopPlayers(players, "Уровень", p => p.Level);
-        PrintTopPlayers(players, "Сила", p => p.Power);
+        var topPlayersByLevel = GetTopPlayers(players, "Уровень", p => p.Level);
+        PrintTopPlayers(topPlayersByLevel, "Уровень");
+
+        var topPlayersByPower = GetTopPlayers(players, "Сила", p => p.Power);
+        PrintTopPlayers(topPlayersByPower, "Сила");
     }
 
-    public static void PrintTopPlayers<T>(List<Player> players, string criteriaName, Func<Player, T> criteriaSelector)
+    public static List<Player> GetTopPlayers<T>(List<Player> players, string criteriaName, Func<Player, T> criteriaSelector)
     {
-        var topPlayers = players.OrderByDescending(criteriaSelector).Take(3);
+        return players.OrderByDescending(criteriaSelector).Take(3).ToList();
+    }
 
+    public static void PrintTopPlayers(List<Player> topPlayers, string criteriaName)
+    {
         Console.WriteLine($"Топ 3 игроков по {criteriaName}:");
 
         foreach (var player in topPlayers)
         {
-            Console.WriteLine($"Имя: {player.Name}, {criteriaName}: {criteriaSelector(player)}");
+            Console.WriteLine($"Имя: {player.Name}, {criteriaName}: {player.GetCriteria(criteriaName)}");
         }
     }
 }
@@ -39,18 +45,40 @@ public class Player
     public string Name
     {
         get { return _name; }
-        set { _name = value; }
+        private set { _name = value; }
     }
 
     public int Level
     {
         get { return _level; }
-        set { _level = value; }
+        private set { _level = value; }
     }
 
     public int Power
     {
         get { return _power; }
-        set { _power = value; }
+        private set { _power = value; }
+    }
+
+    public Player(string name, int level, int power)
+    {
+        Name = name;
+        Level = level;
+        Power = power;
+    }
+
+    public object GetCriteria(string criteriaName)
+    {
+        switch (criteriaName)
+        {
+            case "Уровень":
+                return Level;
+
+            case "Сила":
+                return Power;
+
+            default:
+                throw new ArgumentException("Неверное имя критерия");
+        }
     }
 }
