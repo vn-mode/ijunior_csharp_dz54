@@ -6,61 +6,57 @@ public class Program
 {
     public static void Main()
     {
-        List<Player> players = new List<Player>
-        {
-            new Player("Игрок 1", 10, 100),
-            new Player("Игрок 2", 15, 200),
-            new Player("Игрок 3", 20, 150),
-        };
+        var soldiers = Soldier.CreateSampleSoldiers();
 
-        var topPlayersByLevel = GetTopPlayers(players, "Уровень", p => p.Level, 3);
-        PrintTopPlayers(topPlayersByLevel, "Уровень");
-
-        var topPlayersByPower = GetTopPlayers(players, "Сила", p => p.Power, 3);
-        PrintTopPlayers(topPlayersByPower, "Сила");
+        var soldierService = new SoldierService();
+        soldierService.DisplaySoldierNamesAndRanks(soldiers);
     }
+}
 
-    public static List<Player> GetTopPlayers<T>(List<Player> players, string criteriaName, Func<Player, T> criteriaSelector, int topCount)
+public class SoldierService
+{
+    private const string OutputFormat = "{0} - {1}";
+
+    public void DisplaySoldierNamesAndRanks(IEnumerable<Soldier> soldiers)
     {
-        return players.OrderByDescending(criteriaSelector).Take(topCount).ToList();
-    }
+        var soldierNamesAndRanks = soldiers.Select(soldier => new { soldier.Name, soldier.Rank });
 
-    public static void PrintTopPlayers(List<Player> topPlayers, string criteriaName)
-    {
-        Console.WriteLine($"Топ {topPlayers.Count} игроков по {criteriaName}:");
-
-        foreach (var player in topPlayers)
+        foreach (var item in soldierNamesAndRanks)
         {
-            Console.WriteLine($"Имя: {player.Name}, {criteriaName}: {player.GetCriteria(criteriaName)}");
+            Console.WriteLine(string.Format(OutputFormat, item.Name, item.Rank));
         }
     }
 }
 
-public class Player
+public class Soldier
 {
-    public string Name { get; private set; }
-    public int Level { get; private set; }
-    public int Power { get; private set; }
+    private string _name;
+    private string _weapon;
+    private string _rank;
+    private int _serviceDuration;
 
-    public Player(string name, int level, int power)
+    public string Name { get { return _name; } private set { _name = value; } }
+    public string Weapon { get { return _weapon; } private set { _weapon = value; } }
+    public string Rank { get { return _rank; } private set { _rank = value; } }
+    public int ServiceDuration { get { return _serviceDuration; } private set { _serviceDuration = value; } }
+
+    private Soldier(string name, string weapon, string rank, int serviceDuration)
     {
         Name = name;
-        Level = level;
-        Power = power;
+        Weapon = weapon;
+        Rank = rank;
+        ServiceDuration = serviceDuration;
     }
 
-    public object GetCriteria(string criteriaName)
+    public static List<Soldier> CreateSampleSoldiers()
     {
-        switch (criteriaName)
+        return new List<Soldier>
         {
-            case "Уровень":
-                return Level;
-
-            case "Сила":
-                return Power;
-
-            default:
-                throw new ArgumentException("Неверное имя критерия");
-        }
+            new Soldier("Алексей", "Винтовка", "Рядовой", 12),
+            new Soldier("Иван", "Пистолет", "Сержант", 24),
+            new Soldier("Петр", "Снайперская винтовка", "Капитан", 36),
+            new Soldier("Николай", "Винтовка", "Лейтенант", 48),
+            new Soldier("Томас", "Винтовка", "Майор", 60)
+        };
     }
 }
