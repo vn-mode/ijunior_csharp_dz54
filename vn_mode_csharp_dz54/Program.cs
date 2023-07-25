@@ -13,21 +13,21 @@ public class Program
             new Player("Игрок 3", 20, 150),
         };
 
-        var topPlayersByLevel = GetTopPlayers(players, "Уровень", p => p.Level);
+        var topPlayersByLevel = GetTopPlayers(players, "Уровень", p => p.Level, 3);
         PrintTopPlayers(topPlayersByLevel, "Уровень");
 
-        var topPlayersByPower = GetTopPlayers(players, "Сила", p => p.Power);
+        var topPlayersByPower = GetTopPlayers(players, "Сила", p => p.Power, 3);
         PrintTopPlayers(topPlayersByPower, "Сила");
     }
 
-    public static List<Player> GetTopPlayers<T>(List<Player> players, string criteriaName, Func<Player, T> criteriaSelector)
+    public static List<Player> GetTopPlayers<T>(List<Player> players, string criteriaName, Func<Player, T> criteriaSelector, int topCount)
     {
-        return players.OrderByDescending(criteriaSelector).Take(3).ToList();
+        return players.OrderByDescending(criteriaSelector).Take(topCount).ToList();
     }
 
     public static void PrintTopPlayers(List<Player> topPlayers, string criteriaName)
     {
-        Console.WriteLine($"Топ 3 игроков по {criteriaName}:");
+        Console.WriteLine($"Топ {topPlayers.Count} игроков по {criteriaName}:");
 
         foreach (var player in topPlayers)
         {
@@ -38,27 +38,9 @@ public class Program
 
 public class Player
 {
-    private string _name;
-    private int _level;
-    private int _power;
-
-    public string Name
-    {
-        get { return _name; }
-        private set { _name = value; }
-    }
-
-    public int Level
-    {
-        get { return _level; }
-        private set { _level = value; }
-    }
-
-    public int Power
-    {
-        get { return _power; }
-        private set { _power = value; }
-    }
+    public string Name { get; private set; }
+    public int Level { get; private set; }
+    public int Power { get; private set; }
 
     public Player(string name, int level, int power)
     {
