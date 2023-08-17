@@ -13,58 +13,63 @@ public class Program
     }
 }
 
-public class SoldierService
-{
-    private const string OutputFormat = "{0} - Level: {1} - Strength: {2}";
-
-    public void DisplayTopSoldiers(List<Soldier> soldiers)
-    {
-        var topSoldiersByLevel = soldiers.OrderByDescending(s => s.Level).Take(3);
-        var topSoldiersByStrength = soldiers.OrderByDescending(s => s.Strength).Take(3);
-
-        Console.WriteLine("Top 3 soldiers by level:");
-
-        foreach (var soldier in topSoldiersByLevel)
-        {
-            Console.WriteLine(string.Format(OutputFormat, soldier.Name, soldier.Level, soldier.Strength));
-        }
-
-        Console.WriteLine("\nTop 3 soldiers by strength:");
-
-        foreach (var soldier in topSoldiersByStrength)
-        {
-            Console.WriteLine(string.Format(OutputFormat, soldier.Name, soldier.Level, soldier.Strength));
-        }
-    }
-}
-
 public class Soldier
 {
-    public string Name { get; private set; }
-    public int Level { get; private set; }
-    public int Strength { get; private set; }
+    private string _name;
+    private int _level;
+    private int _strength;
 
     public Soldier(string name, int level, int strength)
     {
-        Name = name;
-        Level = level;
-        Strength = strength;
+        _name = name;
+        _level = level;
+        _strength = strength;
     }
+
+    public string Name => _name;
+    public int Level => _level;
+    public int Strength => _strength;
 
     public static List<Soldier> CreateSampleSoldiers()
     {
         return new List<Soldier>
         {
-            new Soldier("Alex", 10, 100),
-            new Soldier("Ivan", 20, 200),
-            new Soldier("Petr", 30, 300),
-            new Soldier("Nikolai", 40, 400),
-            new Soldier("Thomas", 50, 500),
-            new Soldier("Max", 25, 250),
-            new Soldier("Andrew", 35, 350),
-            new Soldier("Victor", 45, 450),
-            new Soldier("Michael", 55, 550),
-            new Soldier("John", 65, 650)
+            new Soldier("Алексей", 10, 100),
+            new Soldier("Иван", 20, 200),
+            new Soldier("Пётр", 30, 300),
+            new Soldier("Николай", 40, 400),
+            new Soldier("Томас", 50, 500),
+            new Soldier("Максим", 25, 250),
+            new Soldier("Андрей", 35, 350),
+            new Soldier("Виктор", 45, 450),
+            new Soldier("Михаил", 55, 550),
+            new Soldier("Джон", 65, 650)
         };
+    }
+}
+
+public class SoldierService
+{
+    public void DisplayTopSoldiers(List<Soldier> soldiers)
+    {
+        int topSoldiersCount = 3;
+        const string outputFormat = "{0} - Уровень: {1} - Сила: {2}";
+
+        IEnumerable<Soldier> topSoldiersByLevel = soldiers.OrderByDescending(soldiers => soldiers.Level).Take(topSoldiersCount);
+        IEnumerable<Soldier> topSoldiersByStrength = soldiers.OrderByDescending(soldiers => soldiers.Strength).Take(topSoldiersCount);
+
+        Console.WriteLine("Топ {0} солдат по уровню:", topSoldiersCount);
+
+        foreach (Soldier soldier in topSoldiersByLevel)
+        {
+            Console.WriteLine(string.Format(outputFormat, soldier.Name, soldier.Level, soldier.Strength));
+        }
+
+        Console.WriteLine("\nТоп {0} солдат по силе:", topSoldiersCount);
+
+        foreach (Soldier soldier in topSoldiersByStrength)
+        {
+            Console.WriteLine(string.Format(outputFormat, soldier.Name, soldier.Level, soldier.Strength));
+        }
     }
 }
