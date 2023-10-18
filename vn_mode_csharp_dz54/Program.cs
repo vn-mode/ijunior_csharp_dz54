@@ -6,10 +6,11 @@ public class Program
 {
     public static void Main()
     {
-        var soldiers = Soldier.CreateSampleSoldiers();
+        List<Soldier> soldiers = Soldier.CreateSampleSoldiers();
 
-        var soldierService = new SoldierService();
-        soldierService.DisplayTopSoldiers(soldiers);
+        SoldierService soldierService = new SoldierService();
+        soldierService.DisplayTopSoldiersByLevel(soldiers, 3);
+        soldierService.DisplayTopSoldiersByStrength(soldiers, 3);
     }
 }
 
@@ -26,9 +27,20 @@ public class Soldier
         _strength = strength;
     }
 
-    public string Name => _name;
-    public int Level => _level;
-    public int Strength => _strength;
+    public string Name
+    {
+        get { return _name; }
+    }
+
+    public int Level
+    {
+        get { return _level; }
+    }
+
+    public int Strength
+    {
+        get { return _strength; }
+    }
 
     public static List<Soldier> CreateSampleSoldiers()
     {
@@ -50,24 +62,29 @@ public class Soldier
 
 public class SoldierService
 {
-    public void DisplayTopSoldiers(List<Soldier> soldiers)
+    public void DisplayTopSoldiersByLevel(List<Soldier> soldiers, int topSoldiersCount)
     {
-        int topSoldiersCount = 3;
+        Console.WriteLine("Топ " + topSoldiersCount + " солдат по уровню:");
+
+        IEnumerable<Soldier> topSoldiers = soldiers.OrderByDescending(s => s.Level).Take(topSoldiersCount);
+
         const string outputFormat = "{0} - Уровень: {1} - Сила: {2}";
 
-        IEnumerable<Soldier> topSoldiersByLevel = soldiers.OrderByDescending(soldiers => soldiers.Level).Take(topSoldiersCount);
-        IEnumerable<Soldier> topSoldiersByStrength = soldiers.OrderByDescending(soldiers => soldiers.Strength).Take(topSoldiersCount);
-
-        Console.WriteLine("Топ {0} солдат по уровню:", topSoldiersCount);
-
-        foreach (Soldier soldier in topSoldiersByLevel)
+        foreach (Soldier soldier in topSoldiers)
         {
             Console.WriteLine(string.Format(outputFormat, soldier.Name, soldier.Level, soldier.Strength));
         }
+    }
 
-        Console.WriteLine("\nТоп {0} солдат по силе:", topSoldiersCount);
+    public void DisplayTopSoldiersByStrength(List<Soldier> soldiers, int topSoldiersCount)
+    {
+        Console.WriteLine("Топ " + topSoldiersCount + " солдат по силе:");
 
-        foreach (Soldier soldier in topSoldiersByStrength)
+        IEnumerable<Soldier> topSoldiers = soldiers.OrderByDescending(s => s.Strength).Take(topSoldiersCount);
+
+        const string outputFormat = "{0} - Уровень: {1} - Сила: {2}";
+
+        foreach (Soldier soldier in topSoldiers)
         {
             Console.WriteLine(string.Format(outputFormat, soldier.Name, soldier.Level, soldier.Strength));
         }
