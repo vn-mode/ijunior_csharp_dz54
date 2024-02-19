@@ -6,30 +6,25 @@ public class Program
 {
     public static void Main()
     {
-        List<Soldier> soldiers = Soldier.CreateSampleSoldiers();
+        List<Player> players = Player.CreateSamplePlayers();
 
-        SoldierService soldierService = new SoldierService();
-        soldierService.DisplayTopSoldiersByLevel(soldiers, 3);
-        soldierService.DisplayTopSoldiersByStrength(soldiers, 3);
+        PlayerService playerService = new PlayerService();
+        playerService.DisplayTopPlayersByLevel(players, 3);
+        playerService.DisplayTopPlayersByStrength(players, 3);
     }
 }
 
-public class Soldier
+public class Player
 {
-    private string _name;
+    public string Name { get; }
     private int _level;
     private int _strength;
 
-    public Soldier(string name, int level, int strength)
+    public Player(string name, int level, int strength)
     {
-        _name = name;
+        Name = name;
         _level = level;
         _strength = strength;
-    }
-
-    public string Name
-    {
-        get { return _name; }
     }
 
     public int Level
@@ -42,51 +37,51 @@ public class Soldier
         get { return _strength; }
     }
 
-    public static List<Soldier> CreateSampleSoldiers()
+    public static List<Player> CreateSamplePlayers()
     {
-        return new List<Soldier>
+        return new List<Player>
         {
-            new Soldier("Алексей", 10, 100),
-            new Soldier("Иван", 20, 200),
-            new Soldier("Пётр", 30, 300),
-            new Soldier("Николай", 40, 400),
-            new Soldier("Томас", 50, 500),
-            new Soldier("Максим", 25, 250),
-            new Soldier("Андрей", 35, 350),
-            new Soldier("Виктор", 45, 450),
-            new Soldier("Михаил", 55, 550),
-            new Soldier("Джон", 65, 650)
+            new Player("Алексей", 10, 100),
+            new Player("Иван", 20, 200),
+            new Player("Пётр", 30, 300),
+            new Player("Николай", 40, 400),
+            new Player("Томас", 50, 500),
+            new Player("Максим", 25, 250),
+            new Player("Андрей", 35, 350),
+            new Player("Виктор", 45, 450),
+            new Player("Михаил", 55, 550),
+            new Player("Джон", 65, 650)
         };
     }
 }
 
-public class SoldierService
+public class PlayerService
 {
-    public void DisplayTopSoldiersByLevel(List<Soldier> soldiers, int topSoldiersCount)
+    private const string OutputFormat = "{0} - Уровень: {1} - Сила: {2}";
+
+    public void DisplayTopPlayersByLevel(List<Player> players, int topPlayersCount)
     {
-        Console.WriteLine("Топ " + topSoldiersCount + " солдат по уровню:");
+        Console.WriteLine("Топ " + topPlayersCount + " игроков по уровню:");
 
-        IEnumerable<Soldier> topSoldiers = soldiers.OrderByDescending(s => s.Level).Take(topSoldiersCount);
+        IEnumerable<Player> topPlayers = players.OrderByDescending(p => p.Level).Take(topPlayersCount);
 
-        const string outputFormat = "{0} - Уровень: {1} - Сила: {2}";
-
-        foreach (Soldier soldier in topSoldiers)
-        {
-            Console.WriteLine(string.Format(outputFormat, soldier.Name, soldier.Level, soldier.Strength));
-        }
+        DisplayPlayers(topPlayers);
     }
 
-    public void DisplayTopSoldiersByStrength(List<Soldier> soldiers, int topSoldiersCount)
+    public void DisplayTopPlayersByStrength(List<Player> players, int topPlayersCount)
     {
-        Console.WriteLine("Топ " + topSoldiersCount + " солдат по силе:");
+        Console.WriteLine("Топ " + topPlayersCount + " игроков по силе:");
 
-        IEnumerable<Soldier> topSoldiers = soldiers.OrderByDescending(s => s.Strength).Take(topSoldiersCount);
+        IEnumerable<Player> topPlayers = players.OrderByDescending(p => p.Strength).Take(topPlayersCount);
 
-        const string outputFormat = "{0} - Уровень: {1} - Сила: {2}";
+        DisplayPlayers(topPlayers);
+    }
 
-        foreach (Soldier soldier in topSoldiers)
+    private void DisplayPlayers(IEnumerable<Player> players)
+    {
+        foreach (Player player in players)
         {
-            Console.WriteLine(string.Format(outputFormat, soldier.Name, soldier.Level, soldier.Strength));
+            Console.WriteLine(string.Format(OutputFormat, player.Name, player.Level, player.Strength));
         }
     }
 }
