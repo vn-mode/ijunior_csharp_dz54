@@ -7,9 +7,10 @@ public class Program
     public static void Main()
     {
         List<Player> players = Player.CreateSamplePlayers();
+        int topPlayersCount = 3;
 
         PlayerService playerService = new PlayerService();
-        playerService.DisplayTopPlayersByLevel(players, 3);
+        playerService.DisplayTopPlayersByLevel(players, topPlayersCount);
         playerService.DisplayTopPlayersByStrength(players, 3);
     }
 }
@@ -17,24 +18,14 @@ public class Program
 public class Player
 {
     public string Name { get; }
-    private int _level;
-    private int _strength;
+    public int Level { get; }
+    public int Strength { get; }
 
     public Player(string name, int level, int strength)
     {
         Name = name;
-        _level = level;
-        _strength = strength;
-    }
-
-    public int Level
-    {
-        get { return _level; }
-    }
-
-    public int Strength
-    {
-        get { return _strength; }
+        Level = level;
+        Strength = strength;
     }
 
     public static List<Player> CreateSamplePlayers()
@@ -63,7 +54,7 @@ public class PlayerService
     {
         Console.WriteLine("Топ " + topPlayersCount + " игроков по уровню:");
 
-        IEnumerable<Player> topPlayers = players.OrderByDescending(p => p.Level).Take(topPlayersCount);
+        IEnumerable<Player> topPlayers = players.OrderByDescending(player => player.Level).Take(topPlayersCount);
 
         DisplayPlayers(topPlayers);
     }
@@ -72,7 +63,7 @@ public class PlayerService
     {
         Console.WriteLine("Топ " + topPlayersCount + " игроков по силе:");
 
-        IEnumerable<Player> topPlayers = players.OrderByDescending(p => p.Strength).Take(topPlayersCount);
+        IEnumerable<Player> topPlayers = players.OrderByDescending(player => player.Strength).Take(topPlayersCount);
 
         DisplayPlayers(topPlayers);
     }
